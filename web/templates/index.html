@@ -1,0 +1,71 @@
+<html>
+<head>
+	<style>
+		div#menu
+		{
+			text-align: center;
+		}
+		div#menu a
+		{
+			cursor: pointer;
+		}
+		span.on
+		{
+			color: green;
+			text-decoration: bold;
+		}
+		span.off
+		{
+			color: red;
+			text-decoration: bold;
+		}
+	</style>
+	<script type = "application/javascript" src = "{{ url_for('static', filename='jquery.min.js') }}"></script>
+	<script type = "application/javascript">
+		function colorer(msg) {
+			if(msg == "ON")
+				return '<span class = "on">' + msg + '</span>';
+			if(msg == "OFF")
+				return '<span class = "off">' + msg + '</span>';
+			return msg;
+		}
+		$SCRIPT_ROOT = {{request.script_root | tojson | safe}};
+		$(document).ready(function() {
+			$('a.refresh').click(function() {
+				$('span.status').html('<img src = "{{ url_for('static', filename = 'loading.gif') }}" />');
+				$.get($SCRIPT_ROOT + '/status', function(response) {
+					response = response.trim();
+					$('span.status').html(colorer(response));
+				});
+			});
+
+			$('a.turn_on').click(function() {
+				$('span.status').html('<img src = "{{ url_for('static', filename = 'loading.gif') }}" />');
+				$.get($SCRIPT_ROOT + '/on', function(response) {
+					response = response.trim();
+					$('span.status').html(colorer(response));
+				});
+			});
+
+			$('a.turn_off').click(function() {
+				$('span.status').html('<img src = "{{ url_for('static', filename = 'loading.gif') }}" />');
+				$.get($SCRIPT_ROOT + '/off', function(response) {
+					response = response.trim();
+					$('span.status').html(colorer(response));
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+
+<div id = "menu">
+	<a class = "refresh">Rafraichir</a> |
+	<a class = "turn_on">Allumer</a> |
+	<a class = "turn_off">Eteindre</a>
+</div>
+
+<p style = "text-align: center;">La LED est <span class = "status"></span></p>
+
+</body>
+</html>
